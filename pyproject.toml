@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cafe-finder"
+version = "0.1.0"
+description = "Lucknow Cafe Finder - Data Ingestion Pipeline"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31.0",
+    "pandas>=2.0.0",
+    "matplotlib>=3.7.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+]
+
+[project.scripts]
+cafe-finder-pipeline = "cafe_finder.pipeline:main"
+cafe-finder-search = "cafe_finder.search:main"
+cafe-finder-quality = "cafe_finder.quality:main"
+cafe-finder-history = "cafe_finder.history:main"
+cafe-finder-integrity = "cafe_finder.integrity:main"
+cafe-finder-analyze = "cafe_finder.analyze:main"
+cafe-finder-visualize = "cafe_finder.visualize:main"
+cafe-finder-snapshot = "cafe_finder.snapshot:main"
+cafe-finder-lineage = "cafe_finder.lineage:main"
+cafe-finder-compare = "cafe_finder.compare:main"
+
+[project.urls]
+Homepage = "https://github.com/example/lucknow-cafe-finder"
+Documentation = "https://github.com/example/lucknow-cafe-finder/blob/main/README.md"
+License = "https://github.com/example/lucknow-cafe-finder/blob/main/LICENSE"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,23 @@
+[
+  {
+    "osm_id": "node12345",
+    "osm_type": null,
+    "osm_version": null,
+    "osm_timestamp": null,
+    "osm_changeset": null,
+    "osm_user": null,
+    "osm_uid": null,
+    "name": "Test Cafe",
+    "latitude": 26.85,
+    "longitude": 80.95,
+    "street": "Test Street",
+    "housenumber": "123",
+    "city": "Lucknow",
+    "postcode": "226001",
+    "cuisine": "cafe",
+    "opening_hours": "08:00-22:00",
+    "website": "http://example.com",
+    "phone": "+91-1234567890",
+    "source": "OpenStreetMap"
+  }
+]
