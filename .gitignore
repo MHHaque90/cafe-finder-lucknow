@@ -17,6 +17,10 @@ ENV/
 .env.local
 .env.*.local
 
+# Sensitive files
+*.pem
+*.key
+
 # IDE
 .vscode/
 .idea/
