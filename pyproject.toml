@@ -31,9 +31,9 @@ cafe-finder-lineage = "cafe_finder.lineage:main"
 cafe-finder-compare = "cafe_finder.compare:main"
 
 [project.urls]
-Homepage = "https://github.com/example/lucknow-cafe-finder"
-Documentation = "https://github.com/example/lucknow-cafe-finder/blob/main/README.md"
-License = "https://github.com/example/lucknow-cafe-finder/blob/main/LICENSE"
+Homepage = "https://github.com/MHHaque90/cafe-finder-lucknow"
+Documentation = "https://github.com/MHHaque90/cafe-finder-lucknow/blob/main/README.md"
+License = "https://github.com/MHHaque90/cafe-finder-lucknow/blob/main/LICENSE"
 
 [tool.setuptools.packages.find]
 where = ["src"]
