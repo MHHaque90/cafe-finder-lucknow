@@ -1,0 +1,376 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Cafe Finder — Lucknow | System Architecture",
+    "locale": "en",
+    "output": "cafe-finder-architecture.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/MHHaque90/cafe-finder-lucknow",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "f58a57a124b2a8cff346b6a24615332a1c756d42"
+    },
+    "viewBox": [
+      1100,
+      400
+    ],
+    "views": [
+      {
+        "id": "ingestion",
+        "label": "Ingestion path",
+        "focus": [
+          "osm",
+          "fetch",
+          "pipeline",
+          "processing",
+          "dataset"
+        ],
+        "note": "From Overpass retrieval to the validated Lucknow CSV."
+      },
+      {
+        "id": "provenance",
+        "label": "History and lineage",
+        "focus": [
+          "dataset",
+          "provenance",
+          "evolution"
+        ],
+        "note": "Snapshots, integrity checks, and change over time."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "osm",
+      "type": "external",
+      "label": "OSM · Overpass API",
+      "sublabel": "amenity=cafe · Lucknow",
+      "pos": [
+        20,
+        50
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "fetch",
+      "type": "backend",
+      "label": "fetch.py",
+      "sublabel": "Overpass retrieval",
+      "pos": [
+        225,
+        50
+      ],
+      "size": [
+        170,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/cafe_finder/fetch.py",
+          "line": 183,
+          "label": "fetch entry point"
+        }
+      ]
+    },
+    {
+      "id": "pipeline",
+      "type": "backend",
+      "label": "pipeline.py",
+      "sublabel": "orchestration · atomic promotion",
+      "tag": "cafe-finder-pipeline",
+      "pos": [
+        430,
+        50
+      ],
+      "size": [
+        170,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/cafe_finder/pipeline.py",
+          "line": 14,
+          "label": "stage imports"
+        },
+        {
+          "path": "src/cafe_finder/pipeline.py",
+          "line": 74,
+          "label": "run_pipeline"
+        }
+      ]
+    },
+    {
+      "id": "processing",
+      "type": "backend",
+      "label": "clean · validate · schema",
+      "sublabel": "clean.py · validate.py · schema.py",
+      "pos": [
+        635,
+        50
+      ],
+      "size": [
+        170,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/cafe_finder/clean.py",
+          "line": 254,
+          "label": "clean entry point"
+        },
+        {
+          "path": "src/cafe_finder/validate.py",
+          "line": 155,
+          "label": "validate entry point"
+        },
+        {
+          "path": "src/cafe_finder/schema.py",
+          "line": 193,
+          "label": "schema entry point"
+        }
+      ]
+    },
+    {
+      "id": "dataset",
+      "type": "database",
+      "label": "Processed dataset",
+      "sublabel": "lucknow_cafes.csv · 33 × 13",
+      "pos": [
+        840,
+        50
+      ],
+      "size": [
+        170,
+        64
+      ],
+      "sources": [
+        {
+          "path": "data/processed/lucknow_cafes.csv",
+          "label": "processed CSV"
+        }
+      ]
+    },
+    {
+      "id": "analytics",
+      "type": "backend",
+      "label": "analyze · quality · visualize",
+      "sublabel": ".py · EDA · flags · charts",
+      "pos": [
+        155,
+        250
+      ],
+      "size": [
+        200,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/cafe_finder/analyze.py",
+          "line": 305,
+          "label": "analyze entry point"
+        },
+        {
+          "path": "src/cafe_finder/quality.py",
+          "line": 445,
+          "label": "quality entry point"
+        },
+        {
+          "path": "src/cafe_finder/visualize.py",
+          "line": 162,
+          "label": "visualize entry point"
+        }
+      ]
+    },
+    {
+      "id": "discovery",
+      "type": "backend",
+      "label": "search · distance · ranking",
+      "sublabel": ".py · Haversine · 100-pt score",
+      "pos": [
+        380,
+        250
+      ],
+      "size": [
+        180,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/cafe_finder/search.py",
+          "line": 11,
+          "label": "distance + ranking use"
+        },
+        {
+          "path": "src/cafe_finder/search.py",
+          "line": 373,
+          "label": "search entry point"
+        }
+      ]
+    },
+    {
+      "id": "evolution",
+      "type": "backend",
+      "label": "history · compare · lineage",
+      "sublabel": ".py · diffs · lineage",
+      "pos": [
+        600,
+        250
+      ],
+      "size": [
+        190,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/cafe_finder/history.py",
+          "line": 672,
+          "label": "history entry point"
+        },
+        {
+          "path": "src/cafe_finder/compare.py",
+          "line": 254,
+          "label": "compare entry point"
+        },
+        {
+          "path": "src/cafe_finder/lineage.py",
+          "line": 154,
+          "label": "lineage entry point"
+        }
+      ]
+    },
+    {
+      "id": "provenance",
+      "type": "backend",
+      "label": "snapshot · manifest · integrity",
+      "sublabel": ".py · snapshots · SHA-256",
+      "pos": [
+        830,
+        250
+      ],
+      "size": [
+        210,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/cafe_finder/snapshot.py",
+          "line": 341,
+          "label": "snapshot entry point"
+        },
+        {
+          "path": "src/cafe_finder/manifest.py",
+          "line": 385,
+          "label": "manifest entry point"
+        },
+        {
+          "path": "src/cafe_finder/integrity.py",
+          "line": 297,
+          "label": "integrity entry point"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "src/cafe_finder · local-first package",
+      "wraps": [
+        "fetch",
+        "pipeline",
+        "processing",
+        "dataset",
+        "analytics",
+        "discovery",
+        "evolution",
+        "provenance"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "osm-to-fetch",
+      "from": "osm",
+      "to": "fetch"
+    },
+    {
+      "id": "fetch-to-pipeline",
+      "from": "fetch",
+      "to": "pipeline",
+      "label": "raw"
+    },
+    {
+      "id": "pipeline-to-processing",
+      "from": "pipeline",
+      "to": "processing"
+    },
+    {
+      "id": "processing-to-dataset",
+      "from": "processing",
+      "to": "dataset",
+      "label": "CSV"
+    },
+    {
+      "id": "dataset-to-provenance",
+      "from": "dataset",
+      "to": "provenance",
+      "label": "snapshots",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24,
+      "labelDx": -80
+    },
+    {
+      "id": "provenance-to-evolution",
+      "from": "provenance",
+      "to": "evolution",
+      "label": "diffs"
+    },
+    {
+      "id": "dataset-to-analytics",
+      "from": "dataset",
+      "to": "analytics",
+      "label": "read",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "dataset-to-discovery",
+      "from": "dataset",
+      "to": "discovery",
+      "label": "query",
+      "fromSide": "bottom",
+      "toSide": "top"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Data lifecycle",
+      "items": [
+        "Overpass → raw JSON → cleaned JSON → validated CSV",
+        "33 × 13 records · missing stays missing · snapshots versioned"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Interface and config",
+      "items": [
+        "10 CLI: pipeline search quality history integrity / analyze visualize snapshot lineage compare",
+        "config.py · CAFE_FINDER_DATA_DIR · no PYTHONPATH"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Assurance",
+      "items": [
+        "Deterministic · 482 tests · CI Python 3.10–3.14",
+        "Code MIT · OSM data ODbL · no ML · no database"
+      ]
+    }
+  ]
+}

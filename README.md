@@ -272,6 +272,10 @@ cafe-finder/
 │   ├── test_snapshot.py
 │   ├── test_lineage.py
 │   └── test_compare.py
+├── docs/
+│   └── architecture/
+│       ├── cafe-finder-architecture.json
+│       └── cafe-finder-architecture.html
 ├── .github/workflows/
 │   └── ci.yml
 ├── README.md
@@ -372,6 +376,8 @@ OpenStreetMap / Overpass
 ```
 
 All modules import paths from `src/cafe_finder/config.py`. No hardcoded `Path("data/...")` remains.
+
+[Interactive system architecture](docs/architecture/cafe-finder-architecture.html)
 
 ## Data Flow
 
