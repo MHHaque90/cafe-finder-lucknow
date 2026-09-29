@@ -60,6 +60,39 @@ Each stage addresses a real data engineering challenge: incomplete source data, 
 | **Engineering** | `src/` layout, 10 CLI entry points, pytest, CI matrix |
 | **Testing** | 482 tests across 14 modules, Python 3.10–3.14 |
 
+## Visual Showcase
+
+### Cuisine Analysis
+![Cuisine distribution across the Lucknow cafe dataset](docs/images/cafe-finder-cuisine-analysis.png)
+
+Top cuisine tags in the 33-record OSM-derived dataset, dominated by `coffee_shop`.
+
+### Data Quality
+![Per-field completeness of the Lucknow cafe dataset](docs/images/cafe-finder-data-quality.png)
+
+Completeness per field: names are well populated while website and phone are mostly missing — reported, never fabricated.
+
+### Geographic Analysis
+![Cafe locations plotted by longitude and latitude](docs/images/cafe-finder-location-analysis.png)
+
+Spatial distribution of mapped cafes by OSM coordinates (straight-line positions, not walking distances).
+
+### Search and Ranking
+```text
+$ cafe-finder-search --cuisine coffee_shop --sort-by score
+
+1.   Cafe Coffee Day
+   Score: 45/100
+   Why:
+   - Distance could not be determined from dataset → 0 points
+   - Cuisine match: coffee_shop → 30 points
+   - Opening hours available in dataset → 15 points
+   - Website unavailable in dataset → 0 points
+   - Phone unavailable in dataset → 0 points
+```
+
+Deterministic 100-point scoring with a human-readable breakdown per cafe (first of 10 results shown).
+
 ## Installation
 
 ```bash
@@ -225,7 +258,7 @@ CI verifies:
 
 See `.github/workflows/ci.yml` for details.
 
-**Note**: The CI workflow has not yet been verified to execute successfully on GitHub. The instructions and configuration are based on the local implementation only.
+**Note**: GitHub Actions is configured and verified across Python 3.10–3.14, with the 482-test suite and CLI smoke checks passing.
 
 ## Project Structure
 
@@ -273,9 +306,13 @@ cafe-finder/
 │   ├── test_lineage.py
 │   └── test_compare.py
 ├── docs/
-│   └── architecture/
-│       ├── cafe-finder-architecture.json
-│       └── cafe-finder-architecture.html
+│   ├── architecture/
+│   │   ├── cafe-finder-architecture.json
+│   │   └── cafe-finder-architecture.html
+│   └── images/
+│       ├── cafe-finder-cuisine-analysis.png
+│       ├── cafe-finder-data-quality.png
+│       └── cafe-finder-location-analysis.png
 ├── .github/workflows/
 │   └── ci.yml
 ├── README.md
