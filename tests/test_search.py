@@ -3,6 +3,7 @@
 import pandas as pd
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -18,6 +19,11 @@ from cafe_finder.search import (
     search_by_name,
     sort_results,
 )
+
+
+#: Repository root (parent of tests/), used as the subprocess working
+#: directory so CLI tests run from the project root on any machine.
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 class TestSearchIntegration:
@@ -170,7 +176,7 @@ class TestCLIValidationOutput:
             ["python", "-m", "cafe_finder.search", "--sort-by", "distance"],
             capture_output=True,
             text=True,
-            cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine"
+            cwd=REPO_ROOT
         )
         assert result.returncode != 0
         assert "Error: --sort-by distance requires --lat and --lon" in result.stderr
@@ -186,7 +192,7 @@ class TestCLIValidationOutput:
             ["python", "-m", "cafe_finder.search", "--lat", "26.8467"],
             capture_output=True,
             text=True,
-            cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine"
+            cwd=REPO_ROOT
         )
         assert result.returncode != 0
         assert "Error: --lat requires --lon" in result.stderr
@@ -201,7 +207,7 @@ class TestCLIValidationOutput:
             ["python", "-m", "cafe_finder.search", "--lon", "80.9462"],
             capture_output=True,
             text=True,
-            cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine"
+            cwd=REPO_ROOT
         )
         assert result.returncode != 0
         assert "Error: --lon requires --lat" in result.stderr
@@ -216,7 +222,7 @@ class TestCLIValidationOutput:
             ["python", "-m", "cafe_finder.search", "--radius", "3"],
             capture_output=True,
             text=True,
-            cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine"
+            cwd=REPO_ROOT
         )
         assert result.returncode != 0
         assert "Error: --radius requires --lat and --lon" in result.stderr
@@ -231,7 +237,7 @@ class TestCLIValidationOutput:
             ["python", "-m", "cafe_finder.search", "--lat", "26.8467", "--lon", "80.9462", "--radius", "-1"],
             capture_output=True,
             text=True,
-            cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine"
+            cwd=REPO_ROOT
         )
         assert result.returncode != 0
         assert "Error: --radius must be non-negative" in result.stderr
@@ -246,7 +252,7 @@ class TestCLIValidationOutput:
             ["python", "-m", "cafe_finder.search", "--lat", "200", "--lon", "80.9462"],
             capture_output=True,
             text=True,
-            cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine"
+            cwd=REPO_ROOT
         )
         assert result.returncode != 0
         assert "Error: Invalid latitude 200.0: must be in range [-90, 90]" in result.stderr
@@ -590,7 +596,7 @@ class TestPhase6ScoreOnlyOutput:
             ["python", "-m", "cafe_finder.search", "--sort-by", "score"],
             capture_output=True,
             text=True,
-            cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine"
+            cwd=REPO_ROOT
         )
         assert result.returncode == 0
         assert "Score:" in result.stdout
@@ -608,7 +614,7 @@ class TestPhase6ScoreOnlyOutput:
             ["python", "-m", "cafe_finder.search", "--cuisine", "coffee_shop"],
             capture_output=True,
             text=True,
-            cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine"
+            cwd=REPO_ROOT
         )
         assert result.returncode == 0
         assert "Score:" not in result.stdout
@@ -621,7 +627,7 @@ class TestPhase6ScoreOnlyOutput:
             ["python", "-m", "cafe_finder.search", "--lat", "26.8467", "--lon", "80.9462"],
             capture_output=True,
             text=True,
-            cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine"
+            cwd=REPO_ROOT
         )
         assert result.returncode == 0
         assert "Score:" not in result.stdout
@@ -720,7 +726,7 @@ class TestPhase6Integration:
             ["python", "-m", "cafe_finder.search", "--sort-by", "distance"],
             capture_output=True,
             text=True,
-            cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine"
+            cwd=REPO_ROOT
         )
         assert result.returncode != 0
         assert "Error: --sort-by distance requires --lat and --lon" in result.stderr
@@ -736,7 +742,7 @@ class TestPhase6Integration:
         ]
         for cmd in invalid_commands:
             result = subprocess.run(cmd, capture_output=True, text=True,
-                cwd="E:\\Simple Projects\\A Cafe Finder - Tales to tell when we drink caffeine")
+                cwd=REPO_ROOT)
             assert result.returncode != 0
             assert "LUCKNOW CAFE FINDER" not in result.stdout
             assert "Results:" not in result.stdout
