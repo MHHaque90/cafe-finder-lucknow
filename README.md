@@ -8,6 +8,8 @@ A Python data engineering project demonstrating cafe discovery, analysis, and hi
 
 Current baseline: **482 tests**.
 
+[![CI](https://github.com/MHHaque90/cafe-finder-lucknow/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MHHaque90/cafe-finder-lucknow/actions/workflows/ci.yml)
+
 ## What This Project Is
 
 Cafe Finder is a portfolio-grade Python project demonstrating a complete data engineering workflow: from raw OpenStreetMap ingestion through cleaning, validation, analysis, visualization, search, ranking, historical tracking, and integrity verification. It is not a commercial product — it is an engineering exercise showing how a real-world dataset is transformed, analyzed, and maintained over time.
@@ -351,6 +353,8 @@ python -m cafe_finder.snapshot --verbose
 python -m cafe_finder.integrity --verbose
 ```
 
+Quality, search, history, and integrity commands run against local data; only pipeline refresh/fetch operations that acquire fresh OSM data require network access to Overpass.
+
 ## Example Commands
 
 ### Search
@@ -468,7 +472,7 @@ This project does not claim to represent all Lucknow cafes. It reports what OSM 
 * **Python 3.10–3.14** CI matrix
 * **13 canonical data columns** in the processed CSV
 * **33 records** in the current dataset
-* **5 runtime dependencies** (`requests`, `pandas`, `matplotlib`, `pytest`)
+* **3 runtime dependencies** (`requests`, `pandas`, `matplotlib`) + `pytest` for testing
 * **0 application behavior changes** in documentation-only phases
 
 ## License
