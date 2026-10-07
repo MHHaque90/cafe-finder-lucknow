@@ -41,16 +41,5 @@ jobs:
           cafe-finder-lineage --help
           cafe-finder-compare --help
 
-      - name: Verify test collection count
-        run: |
-          COLLECTION_OUTPUT=$(python -m pytest --collect-only -q 2>&1)
-          echo "$COLLECTION_OUTPUT"
-          TEST_COUNT=$(echo "$COLLECTION_OUTPUT" | grep -oP '\d+(?= tests)')
-          echo "Tests collected: $TEST_COUNT"
-          if [ "$TEST_COUNT" != "482" ]; then
-            echo "ERROR: Expected 482 tests, got $TEST_COUNT"
-            exit 1
-          fi
-
       - name: Run test suite
         run: python -m pytest -q

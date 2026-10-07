@@ -6,7 +6,7 @@ A Python data engineering project demonstrating cafe discovery, analysis, and hi
 **Data source**: OpenStreetMap `amenity=cafe` elements.
 **License**: MIT (code) / ODbL 1.0 (data).
 
-Current baseline: **482 tests**.
+Current baseline: **685 tests (572 Python + 113 frontend)**.
 
 [![CI](https://github.com/MHHaque90/cafe-finder-lucknow/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MHHaque90/cafe-finder-lucknow/actions/workflows/ci.yml)
 
@@ -60,7 +60,7 @@ Each stage addresses a real data engineering challenge: incomplete source data, 
 | **Historical** | Snapshots, change detection, observation history, lineage |
 | **Integrity** | Schema validation, SHA-256 checksums, manifests, quarantine |
 | **Engineering** | `src/` layout, 10 CLI entry points, pytest, CI matrix |
-| **Testing** | 482 tests across 14 modules, Python 3.10–3.14 |
+| **Testing** | 685 tests (572 Python across 25 modules + 113 frontend), Python 3.10–3.14 |
 
 ## Visual Showcase
 
@@ -190,7 +190,7 @@ See `DATA_LICENSE.md` for full attribution details and licensing boundaries.
 
 ## Portfolio Summary
 
-Cafe Finder demonstrates a complete data engineering lifecycle: from OpenStreetMap ingestion through cleaning, validation, quality assessment, analysis, visualization, search, ranking, historical tracking, and integrity verification. It is packaged as a Python project with 18 source modules, 14 test modules, 482 tests, and 10 CLI commands. The project is CI-configured for Python 3.10–3.14 and uses a `src/` layout with centralized configuration via `CAFE_FINDER_DATA_DIR`.
+Cafe Finder demonstrates a complete data engineering lifecycle: from OpenStreetMap ingestion through cleaning, validation, quality assessment, analysis, visualization, search, ranking, historical tracking, and integrity verification. It is packaged as a Python project with 18 source modules, 25 test modules, 572 Python tests (plus 113 frontend tests), and 10 CLI commands. The project is CI-configured for Python 3.10–3.14 and uses a `src/` layout with centralized configuration via `CAFE_FINDER_DATA_DIR`.
 
 ### Problem
 
@@ -202,7 +202,7 @@ OpenStreetMap `amenity=cafe` elements retrieved via the Overpass API. The curren
 
 ### Engineering
 
-The project implements: data ingestion, cleaning, schema validation, quality assessment, EDA, visualization, search/filtering, Haversine distance calculation, deterministic ranking, snapshot management, change detection, historical analysis, lineage tracking, and integrity verification. All of this is packaged as a Python project with 10 CLI entry points, 482 tests, and a Python 3.10–3.14 CI matrix.
+The project implements: data ingestion, cleaning, schema validation, quality assessment, EDA, visualization, search/filtering, Haversine distance calculation, deterministic ranking, snapshot management, change detection, historical analysis, lineage tracking, and integrity verification. All of this is packaged as a Python project with 10 CLI entry points, 572 Python tests, and a Python 3.10–3.14 CI matrix.
 
 ### Reliability
 
@@ -210,7 +210,7 @@ Missing data is reported as missing — never fabricated. Historical snapshots p
 
 ### Reproducibility
 
-Install with `pip install -e ".[test]"`, run `python -m pytest -q` to verify 482 tests. Data paths are centrally configured via `CAFE_FINDER_DATA_DIR`. The CI workflow documents the exact installation and test steps.
+Install with `pip install -e ".[test]"`, run `python -m pytest -q` to verify the full Python suite (572 tests). Data paths are centrally configured via `CAFE_FINDER_DATA_DIR`. The CI workflow documents the exact installation and test steps.
 
 ## Skills Demonstrated
 
@@ -238,7 +238,7 @@ python -m pytest --collect-only -q
 python -m pytest -q
 ```
 
-Tests cover all project phases. The current regression baseline is **482 tests**.
+Tests cover all project phases. The current regression baseline is **572 Python tests** (plus **113 frontend tests**, 685 total).
 
 ## Portability
 
@@ -254,13 +254,12 @@ CI verifies:
 - Installation via `pip install -e ".[test]"`
 - Package imports correctly from installed location
 - All 10 CLI entry points respond to `--help`
-- Test collection equals exactly **482 tests**
-- Full test suite passes (**482/482**)
+- Full test suite passes (pytest exit status controls success; no exact-count gate)
 - All supported Python versions pass (Python 3.10–3.14)
 
 See `.github/workflows/ci.yml` for details.
 
-**Note**: GitHub Actions is configured and verified across Python 3.10–3.14, with the 482-test suite and CLI smoke checks passing.
+**Note**: GitHub Actions is configured and verified across Python 3.10–3.14, with the full Python suite and CLI smoke checks passing.
 
 ## Project Structure
 
@@ -466,8 +465,8 @@ This project does not claim to represent all Lucknow cafes. It reports what OSM 
 ## Project Metrics
 
 * **18 source modules** under `src/cafe_finder/`
-* **14 test modules** under `tests/`
-* **482 tests** (current baseline)
+* **25 test modules** under `tests/`
+* **572 Python tests** (current baseline; plus 113 frontend tests, 685 total)
 * **10 CLI commands**
 * **Python 3.10–3.14** CI matrix
 * **13 canonical data columns** in the processed CSV
@@ -1598,3 +1597,72 @@ Bring all documentation in line with the actual implementation. Verify every cla
 ---
 
 * `CHANGELOG.md` created with factual phase history.
+
+---
+
+## Phase 15: Web API & Frontend
+
+### Objective
+
+Expose the existing Python domain layer through a read-only FastAPI backend
+and a React/Vite frontend. The domain package stays the source of truth:
+the API layer only validates queries, calls domain functions, and
+serializes outputs, and the frontend only renders API responses.
+
+### API Endpoints
+
+All endpoints are `GET`-only and read-only:
+
+* `GET /api/health` — liveness plus dataset availability and record count.
+* `GET /api/cafes` — filtered cafe records (no ranking).
+* `GET /api/search` — filtered, distance-aware, ranked search.
+* `GET /api/cafes/{osm_id}` — one record, with optional ranking context.
+* `GET /api/analytics` — overview, cuisine counts, completeness, coordinates.
+* `GET /api/quality` — quality report, provenance, per-record flags.
+* `GET /api/history` — recorded snapshots (newest first) plus history summary.
+* `GET /api/history/compare?baseline=X&target=Y` — backend-computed dataset
+  comparison (added, removed, modified, unchanged, field changes).
+* `GET /api/history/{snapshot_id}` — one snapshot's metadata plus its
+  integrity verdict.
+* `GET /api/integrity` — snapshot integrity status, live-dataset schema
+  validation, and dataset artifact checks.
+* `GET /api/lineage` — historical-analysis lineage, or its honest absence
+  when no successful snapshots exist.
+
+Errors use FastAPI's `{"detail": string}` shape: `400` for invalid query
+combinations, `404` for unknown snapshot/record identifiers, `500` as
+`Dataset unavailable` without filesystem paths.
+
+### Frontend Routes
+
+Hash-routed (no server rewrites needed): `#/` Discover, `#/cafes/:osmId`
+detail, `#/analytics`, `#/quality`, `#/history`, `#/history/compare`,
+`#/integrity`, `#/lineage`.
+
+### Running Locally
+
+```bash
+# API (use a free port; 8000 may be taken by an unrelated process)
+uvicorn api.main:app --port 8001
+
+# Frontend (point it at the API port, then serve the production build)
+cd frontend
+VITE_API_BASE_URL=http://127.0.0.1:8001 npm run build
+npm run preview -- --port 4173 --strictPort
+```
+
+CORS origins come from `CAFE_FINDER_CORS_ORIGINS` (comma-separated) and
+default to local Vite dev origins.
+
+### Truthful Limitations
+
+* No snapshots exist in this repository yet, so History reports an empty
+  snapshot list, comparison requires two recorded snapshots, snapshot
+  integrity reports `NO_SNAPSHOTS`, and historical lineage is unavailable.
+  The UI states each of these instead of inventing data.
+* The live dataset genuinely fails strict schema validation
+  (`name: missing`, numeric `postcode`/`phone`); the Integrity page shows
+  this as-is.
+* Test totals: **572 Python tests** plus **113 frontend tests** (685 total).
+  CI runs the full configured suite and passes on pytest success, with no
+  exact-count gate, so future tests do not need count updates to stay green.

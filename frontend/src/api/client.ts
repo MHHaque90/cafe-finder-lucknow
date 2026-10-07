@@ -8,10 +8,15 @@ import type {
   AnalyticsResponse,
   ApiErrorShape,
   CafeResult,
+  ComparisonResponse,
   HealthResponse,
+  HistoryResponse,
+  IntegrityResponse,
+  LineageResponse,
   QualityResponse,
   SearchParams,
   SearchResponse,
+  SnapshotDetail,
   SortMode,
 } from './types.ts';
 import { ApiRequestError } from './types.ts';
@@ -106,4 +111,24 @@ export function getCafe(osmId: string, cuisine?: string): Promise<CafeResult> {
 
 export function getQuality(): Promise<QualityResponse> {
   return request<QualityResponse>('/api/quality', {});
+}
+
+export function getHistory(): Promise<HistoryResponse> {
+  return request<HistoryResponse>('/api/history', {});
+}
+
+export function getSnapshot(snapshotId: string): Promise<SnapshotDetail> {
+  return request<SnapshotDetail>(`/api/history/${encodeURIComponent(snapshotId)}`, {});
+}
+
+export function compareSnapshots(baseline: string, target: string): Promise<ComparisonResponse> {
+  return request<ComparisonResponse>('/api/history/compare', { baseline, target });
+}
+
+export function getIntegrity(): Promise<IntegrityResponse> {
+  return request<IntegrityResponse>('/api/integrity', {});
+}
+
+export function getLineage(): Promise<LineageResponse> {
+  return request<LineageResponse>('/api/lineage', {});
 }

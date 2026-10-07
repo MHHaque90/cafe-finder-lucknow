@@ -35,7 +35,7 @@ This installs the package and all runtime dependencies (`requests`, `pandas`, `m
 
 ## Running Tests
 
-The current regression baseline is **482 tests**.
+The current regression baseline is **572 Python tests** (plus 113 frontend tests, 685 total).
 
 Collect tests:
 ```bash
@@ -58,7 +58,7 @@ install → run tests → run relevant CLI/tests → run full regression suite
 1. Install the package: `python -m pip install -e ".[test]"`
 2. Run the full test suite: `python -m pytest -q`
 3. Test any new or modified CLI: `cafe-finder-<command> --help`
-4. Verify the regression gate: **482/482 tests pass**
+4. Verify the regression gate: the full suite passes (`python -m pytest -q` exits 0)
 
 ## CLI Development Expectations
 
@@ -119,7 +119,7 @@ See `DATA_LICENSE.md` for full ODbL attribution details.
 The project uses GitHub Actions CI (`.github/workflows/ci.yml`):
 - Python matrix: 3.10–3.14
 - Installation via `pip install -e ".[test]"`
-- Test collection gate: 482 tests
+- Full pytest execution (suite success controls the gate, not an exact test count)
 - Full pytest execution
 - All 10 CLI `--help` verification
 

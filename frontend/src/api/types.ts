@@ -116,6 +116,105 @@ export interface AnalyticsResponse {
   coordinates: AnalyticsCoordinates;
 }
 
+/** One recorded snapshot, exactly as the backend recorded it. */
+export interface SnapshotMetadata {
+  snapshot_id: string;
+  retrieved_at_utc: string;
+  source: string;
+  retrieval_method: string;
+  endpoint: string;
+  query: string;
+  record_count: number;
+  raw_file: string;
+  processed_file: string;
+  status: string;
+}
+
+export interface HistoryResponse {
+  snapshots: SnapshotMetadata[];
+  summary: Record<string, unknown>;
+}
+
+export interface SnapshotDetail {
+  metadata: SnapshotMetadata;
+  integrity_status: string;
+  integrity_errors: string[];
+}
+
+export interface ComparisonResponse {
+  baseline: string;
+  target: string;
+  old_record_count: number;
+  new_record_count: number;
+  added: Array<Record<string, unknown>>;
+  removed: Array<Record<string, unknown>>;
+  modified: Array<Record<string, unknown>>;
+  unchanged: Array<Record<string, unknown>>;
+  field_changes: Array<Record<string, unknown>>;
+}
+
+export interface SnapshotIntegrity {
+  snapshot_id: string | null;
+  status: string;
+  checks: unknown[];
+  errors: string[];
+}
+
+export interface SchemaValidation {
+  valid: boolean;
+  schema_version: number;
+  missing_columns: string[];
+  unexpected_columns: string[];
+  invalid_types: Record<string, string>;
+  column_order_valid: boolean;
+}
+
+export interface ArtifactVerification {
+  path: string;
+  exists: boolean;
+  readable: boolean;
+  sha256_actual: string | null;
+  sha256_expected: string | null;
+  sha_match: boolean | null;
+  size_actual: number | null;
+  size_expected: number | null;
+  size_match: boolean | null;
+  valid: boolean;
+  error: string | null;
+}
+
+export interface IntegrityResponse {
+  snapshot_integrity: SnapshotIntegrity;
+  schema: SchemaValidation;
+  artifact: ArtifactVerification;
+}
+
+export interface LineageSnapshotEntry {
+  snapshot_id: string;
+  retrieved_at_utc: string;
+  record_count: number;
+  raw_file: string;
+  processed_file: string;
+}
+
+export interface LineageReport {
+  analysis_type: string;
+  source: string;
+  retrieval_method: string;
+  snapshots_analyzed: number;
+  snapshot_ids: string[];
+  first_snapshot: LineageSnapshotEntry;
+  latest_snapshot: LineageSnapshotEntry;
+  snapshots: LineageSnapshotEntry[];
+  generated_at_utc: string;
+}
+
+export interface LineageResponse {
+  available: boolean;
+  report: LineageReport | null;
+  reason: string | null;
+}
+
 /** Error thrown by the API client. Never carries tracebacks or paths. */
 export class ApiRequestError extends Error {
   readonly status: number;

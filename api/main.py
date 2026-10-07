@@ -18,7 +18,7 @@ import cafe_finder
 from cafe_finder.config import DEFAULT_CSV_PATH
 
 from .dependencies import load_dataset
-from .routes import analytics, cafes, quality
+from .routes import analytics, cafes, history, integrity, lineage, quality
 from .schemas import DatasetInfo, HealthResponse
 
 logger = logging.getLogger("cafe_finder.api")
@@ -93,3 +93,6 @@ def health() -> HealthResponse:
 app.include_router(cafes.router, prefix="/api", tags=["cafes"])
 app.include_router(analytics.router, prefix="/api", tags=["analytics"])
 app.include_router(quality.router, prefix="/api", tags=["quality"])
+app.include_router(history.router, prefix="/api", tags=["history"])
+app.include_router(integrity.router, prefix="/api", tags=["integrity"])
+app.include_router(lineage.router, prefix="/api", tags=["lineage"])

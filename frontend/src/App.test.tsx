@@ -38,6 +38,35 @@ const QUALITY_PAYLOAD = {
   records: [{ osm_id: 'node1', quality_flags: [], quality_issue_count: 0 }],
 };
 
+const HISTORY_PAYLOAD = {
+  snapshots: [],
+  summary: {
+    snapshots_analyzed: 0, snapshot_ids: [], first_snapshot: null, latest_snapshot: null,
+    unique_cafes: 0, added: 0, no_longer_observed: 0, modified: 0, unchanged: 0,
+    field_summary: [], total_field_changes: 0,
+  },
+};
+
+const COMPARISON_PAYLOAD = {
+  baseline: 'a', target: 'b', old_record_count: 0, new_record_count: 0,
+  added: [], removed: [], modified: [], unchanged: [], field_changes: [],
+};
+
+const INTEGRITY_PAYLOAD = {
+  snapshot_integrity: { snapshot_id: null, status: 'NO_SNAPSHOTS', checks: [], errors: [] },
+  schema: {
+    valid: true, schema_version: 1, missing_columns: [], unexpected_columns: [],
+    invalid_types: {}, column_order_valid: true,
+  },
+  artifact: {
+    path: 'data/processed/lucknow_cafes.csv', exists: true, readable: true,
+    sha256_actual: null, sha256_expected: null, sha_match: null, size_actual: 1,
+    size_expected: null, size_match: null, valid: true, error: null,
+  },
+};
+
+const LINEAGE_PAYLOAD = { available: false, report: null, reason: 'none recorded' };
+
 function mockApi() {
   vi.stubGlobal(
     'fetch',
@@ -46,6 +75,10 @@ function mockApi() {
       let body: unknown = SEARCH_BODY;
       if (path.includes('/api/analytics')) body = ANALYTICS_PAYLOAD;
       else if (path.includes('/api/quality')) body = QUALITY_PAYLOAD;
+      else if (path.includes('/api/history/compare')) body = COMPARISON_PAYLOAD;
+      else if (path.includes('/api/history')) body = HISTORY_PAYLOAD;
+      else if (path.includes('/api/integrity')) body = INTEGRITY_PAYLOAD;
+      else if (path.includes('/api/lineage')) body = LINEAGE_PAYLOAD;
       else if (path.includes('/api/cafes/')) body = SEARCH_BODY.results[0];
       return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) });
     }),
@@ -102,6 +135,36 @@ describe('App navigation', () => {
     window.location.hash = '#/cafes/node1';
     render(<App />);
     await waitFor(() => expect(screen.getByText(/Record node1/)).toBeInTheDocument());
+  });
+
+  it('navigates to History, Integrity, and Lineage', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.getByText('1 cafe found')).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('link', { name: 'History' }));
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'History' })).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('link', { name: 'Integrity' }));
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Integrity' })).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('link', { name: 'Lineage' }));
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Lineage' })).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('link', { name: 'Discover' }));
+    await waitFor(() => expect(screen.getByText('1 cafe found')).toBeInTheDocument());
+  });
+
+  it('marks the History navigation link active', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.getByText('1 cafe found')).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('link', { name: 'History' }));
+    await waitFor(() =>
+      expect(screen.getByRole('link', { name: 'History' })).toHaveAttribute('aria-current', 'page'),
+    );
+  });
+
+  it('renders the comparison route from a compare hash', async () => {
+    window.location.hash = '#/history/compare?baseline=a&target=b';
+    render(<App />);
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'Compare snapshots' })).toBeInTheDocument(),
+    );
   });
 
   it('falls back to Discover for unknown hashes', async () => {

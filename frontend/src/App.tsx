@@ -1,6 +1,10 @@
 import { AnalyticsPage } from './pages/AnalyticsPage.tsx';
 import { CafeDetailPage } from './pages/CafeDetailPage.tsx';
+import { ComparePage } from './pages/ComparePage.tsx';
 import { DiscoverPage } from './pages/DiscoverPage.tsx';
+import { HistoryPage } from './pages/HistoryPage.tsx';
+import { IntegrityPage } from './pages/IntegrityPage.tsx';
+import { LineagePage } from './pages/LineagePage.tsx';
 import { QualityPage } from './pages/QualityPage.tsx';
 import { useHashRoute } from './routing.ts';
 
@@ -24,6 +28,15 @@ export default function App() {
           </a>{' '}
           <a href="#/quality" aria-current={route.name === 'quality' ? 'page' : undefined}>
             Data Quality
+          </a>{' '}
+          <a href="#/history" aria-current={route.name === 'history' ? 'page' : undefined}>
+            History
+          </a>{' '}
+          <a href="#/integrity" aria-current={route.name === 'integrity' ? 'page' : undefined}>
+            Integrity
+          </a>{' '}
+          <a href="#/lineage" aria-current={route.name === 'lineage' ? 'page' : undefined}>
+            Lineage
           </a>
         </nav>
       </header>
@@ -34,6 +47,14 @@ export default function App() {
           <AnalyticsPage />
         ) : route.name === 'quality' ? (
           <QualityPage />
+        ) : route.name === 'history' ? (
+          <HistoryPage />
+        ) : route.name === 'compare' ? (
+          <ComparePage baseline={route.baseline} target={route.target} />
+        ) : route.name === 'integrity' ? (
+          <IntegrityPage />
+        ) : route.name === 'lineage' ? (
+          <LineagePage />
         ) : (
           <DiscoverPage />
         )}

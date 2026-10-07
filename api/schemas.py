@@ -109,3 +109,126 @@ class HealthResponse(BaseModel):
 
 class ErrorResponse(BaseModel):
     detail: str
+
+
+class SnapshotMetadata(BaseModel):
+    """One successful snapshot's metadata, exactly as recorded."""
+
+    snapshot_id: str
+    retrieved_at_utc: str
+    source: str
+    retrieval_method: str
+    endpoint: str
+    query: str
+    record_count: int
+    raw_file: str
+    processed_file: str
+    status: str
+
+
+class HistoryResponse(BaseModel):
+    """Available snapshots plus the domain-computed history summary."""
+
+    snapshots: list[SnapshotMetadata]
+    summary: dict
+
+
+class SnapshotDetailResponse(BaseModel):
+    """One snapshot's metadata plus its read-only integrity verdict."""
+
+    metadata: SnapshotMetadata
+    integrity_status: str
+    integrity_errors: list[str]
+
+
+class ComparisonResponse(BaseModel):
+    """Backend-computed dataset comparison. The API never fabricates rows:
+    added/removed entries are the domain's serialized records, and an empty
+    snapshot set is reported by the History endpoint, not here.
+    """
+
+    baseline: str
+    target: str
+    old_record_count: int
+    new_record_count: int
+    added: list[dict]
+    removed: list[dict]
+    modified: list[dict]
+    unchanged: list[dict]
+    field_changes: list[dict]
+
+
+class SnapshotIntegrity(BaseModel):
+    """Read-only snapshot integrity verdict. Absent snapshots are reported
+    with a status such as NO_SNAPSHOTS, never converted to PASSED.
+    """
+
+    snapshot_id: str | None = None
+    status: str
+    checks: list = Field(default_factory=list)
+    errors: list[str] = Field(default_factory=list)
+
+
+class SchemaValidation(BaseModel):
+    """Current-dataset schema validation, as computed by the domain."""
+
+    valid: bool
+    schema_version: int
+    missing_columns: list[str] = Field(default_factory=list)
+    unexpected_columns: list[str] = Field(default_factory=list)
+    invalid_types: dict[str, str] = Field(default_factory=dict)
+    column_order_valid: bool
+
+
+class ArtifactVerification(BaseModel):
+    """Current-dataset artifact checks. No expectations are supplied, so
+    only existence, readability, actual hash, and actual size are reported.
+    """
+
+    path: str
+    exists: bool
+    readable: bool
+    sha256_actual: str | None = None
+    sha256_expected: str | None = None
+    sha_match: bool | None = None
+    size_actual: int | None = None
+    size_expected: int | None = None
+    size_match: bool | None = None
+    valid: bool
+    error: str | None = None
+
+
+class IntegrityResponse(BaseModel):
+    snapshot_integrity: SnapshotIntegrity
+    schema: SchemaValidation
+    artifact: ArtifactVerification
+
+
+class LineageSnapshotEntry(BaseModel):
+    snapshot_id: str
+    retrieved_at_utc: str
+    record_count: int
+    raw_file: str
+    processed_file: str
+
+
+class LineageReport(BaseModel):
+    analysis_type: str
+    source: str
+    retrieval_method: str
+    snapshots_analyzed: int
+    snapshot_ids: list[str]
+    first_snapshot: LineageSnapshotEntry
+    latest_snapshot: LineageSnapshotEntry
+    snapshots: list[LineageSnapshotEntry]
+    generated_at_utc: str
+
+
+class LineageResponse(BaseModel):
+    """Historical-analysis lineage. When no successful snapshots exist the
+    domain cannot establish lineage, so available is False with the reason.
+    """
+
+    available: bool
+    report: LineageReport | None = None
+    reason: str | None = None
