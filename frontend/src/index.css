@@ -21,6 +21,38 @@
   box-sizing: border-box;
 }
 
+/* Visually hidden but available to assistive technology. Used for table
+ * captions, section headings that would duplicate visible labels, and the
+ * skip link (which becomes visible on focus). */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  font-weight: 700;
+  transition: top 0.15s ease-in;
+}
+
+.skip-link:focus-visible {
+  top: 12px;
+}
+
 body {
   margin: 0;
   background: var(--bg);
@@ -93,6 +125,7 @@ body {
 
 .field-inline {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
 }
@@ -164,6 +197,20 @@ select {
   background: #e8f3f8;
 }
 
+/* Inline toggle inside cards: reads like the adjacent text links but
+ * keeps native button semantics, focus visibility, and target size. */
+.link-button {
+  font: inherit;
+  color: var(--accent);
+  background: none;
+  border: none;
+  padding: 10px 4px;
+  min-height: 44px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 :focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 2px;
@@ -180,7 +227,7 @@ select {
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
   gap: 16px;
 }
 

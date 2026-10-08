@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { AnalyticsPage } from './pages/AnalyticsPage.tsx';
 import { CafeDetailPage } from './pages/CafeDetailPage.tsx';
 import { ComparePage } from './pages/ComparePage.tsx';
@@ -8,10 +9,41 @@ import { LineagePage } from './pages/LineagePage.tsx';
 import { QualityPage } from './pages/QualityPage.tsx';
 import { useHashRoute } from './routing.ts';
 
+const ROUTE_TITLES: Record<string, string> = {
+  discover: 'Discover',
+  detail: 'Cafe details',
+  analytics: 'Analytics',
+  quality: 'Data Quality',
+  history: 'History',
+  compare: 'Compare snapshots',
+  integrity: 'Integrity',
+  lineage: 'Lineage',
+};
+
 export default function App() {
   const route = useHashRoute();
+  const mainRef = useRef<HTMLElement | null>(null);
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    document.title = `Cafe Finder — ${ROUTE_TITLES[route.name] ?? 'Discover'}`;
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    // Hash navigation does not move focus on its own; move it to the
+    // main landmark so keyboard and screen-reader users land on the new
+    // page instead of staying on the old navigation link.
+    mainRef.current?.focus({ preventScroll: true });
+    // jsdom (tests) does not implement scrollTo; browsers always do.
+    if (typeof window.scrollTo === 'function') window.scrollTo(0, 0);
+  }, [route]);
+
   return (
     <div className="app">
+      <a className="skip-link" href="#main">
+        Skip to main content
+      </a>
       <header className="app-header">
         <div>
           <h1>
@@ -40,7 +72,7 @@ export default function App() {
           </a>
         </nav>
       </header>
-      <main>
+      <main id="main" ref={mainRef} tabIndex={-1}>
         {route.name === 'detail' ? (
           <CafeDetailPage key={route.osmId} osmId={route.osmId} />
         ) : route.name === 'analytics' ? (

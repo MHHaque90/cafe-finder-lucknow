@@ -94,7 +94,7 @@ export function LineagePage() {
   const provenance = quality?.provenance ?? null;
 
   return (
-    <div aria-live="polite">
+    <div>
       <h2>Lineage</h2>
       <p className="muted">
         Where the data came from and what is recorded about its path — nothing inferred.
@@ -141,6 +141,9 @@ export function LineagePage() {
         ) : (
           <div className="table-scroll">
             <table>
+              <caption className="visually-hidden">
+                Provenance of the dataset currently served by the API
+              </caption>
               <tbody>
                 <tr>
                   <th scope="row">Source</th>

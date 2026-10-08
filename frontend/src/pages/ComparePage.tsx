@@ -108,7 +108,7 @@ export function ComparePage({ baseline, target }: ComparePageProps) {
 
   if (state.status === 'error' && (baseline === null || target === null)) {
     return (
-      <div aria-live="polite">
+      <div>
         <h2>Compare snapshots</h2>
         <div className="status">
           <p>Snapshot comparison requires two available snapshots.</p>
@@ -145,7 +145,7 @@ export function ComparePage({ baseline, target }: ComparePageProps) {
 
   if (state.comparison === null) {
     return (
-      <div className="status" aria-live="polite">
+      <div className="status">
         <p>Comparison information is unavailable.</p>
       </div>
     );
@@ -154,7 +154,7 @@ export function ComparePage({ baseline, target }: ComparePageProps) {
   const { comparison } = state;
 
   return (
-    <div aria-live="polite">
+    <div>
       <h2>Compare snapshots</h2>
       <p className="muted">
         Baseline <code className="hash">{comparison.baseline}</code> against target{' '}
@@ -194,6 +194,7 @@ export function ComparePage({ baseline, target }: ComparePageProps) {
         ) : (
           <div className="table-scroll">
             <table>
+              <caption className="visually-hidden">Records present only in the target snapshot</caption>
               <thead>
                 <tr>
                   <th scope="col">OSM ID</th>
@@ -203,7 +204,7 @@ export function ComparePage({ baseline, target }: ComparePageProps) {
               <tbody>
                 {comparison.added.map((row, index) => (
                   <tr key={String(row['osm_id'] ?? index)}>
-                    <td>{cellText(row['osm_id'])}</td>
+                    <th scope="row">{cellText(row['osm_id'])}</th>
                     <td>{cellText(row['name'])}</td>
                   </tr>
                 ))}
@@ -220,6 +221,7 @@ export function ComparePage({ baseline, target }: ComparePageProps) {
         ) : (
           <div className="table-scroll">
             <table>
+              <caption className="visually-hidden">Records present only in the baseline snapshot</caption>
               <thead>
                 <tr>
                   <th scope="col">OSM ID</th>
@@ -229,7 +231,7 @@ export function ComparePage({ baseline, target }: ComparePageProps) {
               <tbody>
                 {comparison.removed.map((row, index) => (
                   <tr key={String(row['osm_id'] ?? index)}>
-                    <td>{cellText(row['osm_id'])}</td>
+                    <th scope="row">{cellText(row['osm_id'])}</th>
                     <td>{cellText(row['name'])}</td>
                   </tr>
                 ))}
@@ -246,6 +248,9 @@ export function ComparePage({ baseline, target }: ComparePageProps) {
         ) : (
           <div className="table-scroll">
             <table>
+              <caption className="visually-hidden">
+                Records with field-level changes between baseline and target
+              </caption>
               <thead>
                 <tr>
                   <th scope="col">OSM ID</th>
@@ -256,7 +261,7 @@ export function ComparePage({ baseline, target }: ComparePageProps) {
               <tbody>
                 {comparison.modified.map((entry, index) => (
                   <tr key={String(asRecord(entry)?.['osm_id'] ?? index)}>
-                    <td>{cellText(asRecord(entry)?.['osm_id'])}</td>
+                    <th scope="row">{cellText(asRecord(entry)?.['osm_id'])}</th>
                     <td>{cellText(asRecord(entry)?.['name'])}</td>
                     <td>
                       <ul>

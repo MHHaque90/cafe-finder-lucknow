@@ -167,6 +167,35 @@ describe('App navigation', () => {
     );
   });
 
+  it('exposes landmarks and a skip link to the main content', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.getByText('1 cafe found')).toBeInTheDocument());
+    expect(screen.getByRole('banner')).toBeInTheDocument();
+    expect(screen.getByRole('main')).toBeInTheDocument();
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+    const skipLink = screen.getByRole('link', { name: 'Skip to main content' });
+    expect(skipLink).toHaveAttribute('href', '#main');
+    expect(screen.getByRole('main')).toHaveAttribute('id', 'main');
+  });
+
+  it('updates the document title per route', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.getByText('1 cafe found')).toBeInTheDocument());
+    expect(document.title).toContain('Discover');
+    fireEvent.click(screen.getByRole('link', { name: 'History' }));
+    await waitFor(() => expect(document.title).toContain('History'));
+  });
+
+  it('moves focus to the main landmark on route change', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.getByText('1 cafe found')).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('link', { name: 'Integrity' }));
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'Integrity' })).toBeInTheDocument(),
+    );
+    expect(document.activeElement?.tagName).toBe('MAIN');
+  });
+
   it('falls back to Discover for unknown hashes', async () => {
     window.location.hash = '#/nope';
     render(<App />);

@@ -101,6 +101,7 @@ export function DiscoverPage() {
           aria-label="Results"
           aria-busy={state.status === 'loading'}
         >
+        <h3 className="visually-hidden">Results</h3>
         <div aria-live="polite">
           {state.status === 'loading' && <LoadingState />}
           {state.status === 'error' && state.error !== null && (
@@ -122,7 +123,16 @@ export function DiscoverPage() {
                 className={cafe.osm_id === selectedOsmId ? 'card-selected' : undefined}
                 onClick={() => setSelectedOsmId(cafe.osm_id)}
               >
-                <CafeCard cafe={cafe} />
+                <CafeCard
+                  cafe={cafe}
+                  highlightLabel={
+                    cafe.osm_id === selectedOsmId ? 'Unhighlight on map' : 'Highlight on map'
+                  }
+                  highlightPressed={cafe.osm_id === selectedOsmId}
+                  onHighlight={() =>
+                    setSelectedOsmId(cafe.osm_id === selectedOsmId ? null : cafe.osm_id)
+                  }
+                />
               </div>
             ))}
           </div>
@@ -133,6 +143,7 @@ export function DiscoverPage() {
         className={`map-pane ${mobileView === 'map' ? 'map-pane-visible-mobile' : ''}`}
         aria-label="Cafe map"
       >
+        <h3 className="visually-hidden">Cafe map</h3>
         <CafeMap
           cafes={state.results}
           selectedOsmId={selectedOsmId}

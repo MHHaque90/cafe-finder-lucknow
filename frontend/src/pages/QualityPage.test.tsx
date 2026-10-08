@@ -138,4 +138,12 @@ describe('QualityPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /retry/i }));
     await waitFor(() => expect(calls).toBeGreaterThan(1));
   });
+
+  it('gives tables accessible captions and row headers', async () => {
+    const { container } = render(<QualityPage />);
+    await waitFor(() => expect(screen.getByText('81.8%')).toBeInTheDocument());
+    const captions = container.querySelectorAll('caption');
+    expect(captions.length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByRole('rowheader', { name: 'name' })).toBeInTheDocument();
+  });
 });

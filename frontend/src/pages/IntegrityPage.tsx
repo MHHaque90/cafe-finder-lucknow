@@ -121,7 +121,7 @@ export function IntegrityPage() {
   const invalidEntries = Object.entries(integrity.schema.invalid_types);
 
   return (
-    <div aria-live="polite">
+    <div>
       <h2>Integrity</h2>
       <p className="muted">
         Whether the recorded data passes the repository&apos;s own checks — nothing scored here.
@@ -188,6 +188,9 @@ export function IntegrityPage() {
             <h4>Invalid values</h4>
             <div className="table-scroll">
               <table>
+                <caption className="visually-hidden">
+                  Fields whose values fail schema validation
+                </caption>
                 <thead>
                   <tr>
                     <th scope="col">Field</th>
@@ -197,7 +200,7 @@ export function IntegrityPage() {
                 <tbody>
                   {invalidEntries.map(([field, problem]) => (
                     <tr key={field}>
-                      <td>{field}</td>
+                      <th scope="row">{field}</th>
                       <td>{problem}</td>
                     </tr>
                   ))}
@@ -221,6 +224,9 @@ export function IntegrityPage() {
         </p>
         <div className="table-scroll">
           <table>
+            <caption className="visually-hidden">
+              Existence, readability, hash, and size of the served dataset file
+            </caption>
             <tbody>
               <tr>
                 <th scope="row">Artifact</th>

@@ -136,7 +136,7 @@ export function HistoryPage() {
     typeof summary.total_field_changes === 'number' ? summary.total_field_changes : 0;
 
   return (
-    <div aria-live="polite">
+    <div>
       <h2>History</h2>
       <p className="muted">
         Recorded dataset snapshots, as reported by the API — nothing reconstructed here.
@@ -164,6 +164,9 @@ export function HistoryPage() {
         <h3>Snapshots</h3>
         <div className="table-scroll">
           <table>
+            <caption className="visually-hidden">
+              Recorded snapshots, newest first
+            </caption>
             <thead>
               <tr>
                 <th scope="col">Snapshot</th>
@@ -176,9 +179,9 @@ export function HistoryPage() {
             <tbody>
               {history.snapshots.map((snapshot) => (
                 <tr key={snapshot.snapshot_id}>
-                  <td>
+                  <th scope="row">
                     <code className="hash">{snapshot.snapshot_id}</code>
-                  </td>
+                  </th>
                   <td>{snapshot.retrieved_at_utc}</td>
                   <td>{snapshot.record_count}</td>
                   <td>{snapshot.source}</td>
@@ -214,6 +217,9 @@ export function HistoryPage() {
             <h3>Snapshot details</h3>
             <div className="table-scroll">
               <table>
+                <caption className="visually-hidden">
+                  Recorded metadata for the selected snapshot
+                </caption>
                 <tbody>
                   <tr>
                     <th scope="row">Snapshot</th>

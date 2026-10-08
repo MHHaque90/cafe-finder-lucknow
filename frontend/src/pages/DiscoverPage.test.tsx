@@ -202,4 +202,38 @@ describe('DiscoverPage', () => {
     await waitFor(() => expect(screen.getByText(/cafes found/)).toBeInTheDocument());
     expect(container.querySelectorAll('.cf-radius')).toHaveLength(1);
   });
+
+  it('toggles card selection from the keyboard-operable highlight button', async () => {
+    const { container } = render(<DiscoverPage />);
+    await waitFor(() => expect(screen.getByText('2 cafes found')).toBeInTheDocument());
+    const highlights = screen.getAllByRole('button', { name: 'Highlight on map' });
+    expect(highlights).toHaveLength(2);
+    expect(highlights[0]).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(highlights[0]);
+    await waitFor(() =>
+      expect(container.querySelector('.card-selected')).not.toBeNull(),
+    );
+    expect(screen.getByRole('button', { name: 'Unhighlight on map' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
+  it('labels the results and map regions with headings', async () => {
+    render(<DiscoverPage />);
+    await waitFor(() => expect(screen.getByText('2 cafes found')).toBeInTheDocument());
+    expect(screen.getByRole('heading', { name: 'Results' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Cafe map' })).toBeInTheDocument();
+  });
+
+  it('exposes the mobile list/map switch as pressed-group buttons', async () => {
+    render(<DiscoverPage />);
+    await waitFor(() => expect(screen.getByText('2 cafes found')).toBeInTheDocument());
+    const listButton = screen.getByRole('button', { name: 'List' });
+    const mapButton = screen.getByRole('button', { name: 'Map' });
+    expect(listButton).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(mapButton);
+    expect(mapButton).toHaveAttribute('aria-pressed', 'true');
+    expect(listButton).toHaveAttribute('aria-pressed', 'false');
+  });
 });

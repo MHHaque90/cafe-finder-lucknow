@@ -99,7 +99,7 @@ export function AnalyticsPage() {
   const bounds = analytics.coordinates.bounds;
 
   return (
-    <div aria-live="polite">
+    <div>
       <h2>Analytics</h2>
       <p className="muted">Lucknow cafe dataset, as reported by the API — nothing computed here.</p>
 
@@ -139,6 +139,9 @@ export function AnalyticsPage() {
           <summary>Data table</summary>
           <div className="table-scroll">
             <table>
+              <caption className="visually-hidden">
+                Cuisine tag record counts, most common first
+              </caption>
               <thead>
                 <tr>
                   <th scope="col">Cuisine tag</th>
@@ -148,7 +151,7 @@ export function AnalyticsPage() {
               <tbody>
                 {analytics.cuisine.map((entry) => (
                   <tr key={entry.tag}>
-                    <td>{entry.tag}</td>
+                    <th scope="row">{entry.tag}</th>
                     <td>{entry.count}</td>
                   </tr>
                 ))}
@@ -176,6 +179,9 @@ export function AnalyticsPage() {
           <summary>Data table</summary>
           <div className="table-scroll">
             <table>
+              <caption className="visually-hidden">
+                Per-field completeness percentages
+              </caption>
               <thead>
                 <tr>
                   <th scope="col">Field</th>
@@ -185,7 +191,7 @@ export function AnalyticsPage() {
               <tbody>
                 {Object.entries(analytics.completeness).map(([field, percent]) => (
                   <tr key={field}>
-                    <td>{field}</td>
+                    <th scope="row">{field}</th>
                     <td>{percent.toFixed(1)}%</td>
                   </tr>
                 ))}

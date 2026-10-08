@@ -87,14 +87,29 @@ export interface CafeMapProps {
   center: [number, number] | null;
   radiusKm: number | null;
   notice: string | null;
+  /** False for read-only map instances (e.g. detail pages) where marker
+   *  activation would be a no-op: markers stay visible but leave the tab
+   *  order, since all location data already exists as text. */
+  interactiveMarkers?: boolean;
 }
 
 /**
  * Presentation-only map. Receives cafes from Discover state, never
  * fetches. Marker identity is always `osm_id`. The radius circle is a
  * visual of the API's own radius value — membership stays server-side.
+ * The surrounding section provides the accessible region name; every
+ * mapped fact (name, cuisine, distance, score, detail link) also exists
+ * as text in the result list and marker popups.
  */
-export function CafeMap({ cafes, selectedOsmId, onSelect, center, radiusKm, notice }: CafeMapProps) {
+export function CafeMap({
+  cafes,
+  selectedOsmId,
+  onSelect,
+  center,
+  radiusKm,
+  notice,
+  interactiveMarkers = true,
+}: CafeMapProps) {
   const mapped: MappedCafe[] = [];
   for (const cafe of cafes) {
     const point = toMapped(cafe);
@@ -113,7 +128,6 @@ export function CafeMap({ cafes, selectedOsmId, onSelect, center, radiusKm, noti
         zoom={FALLBACK_ZOOM}
         scrollWheelZoom
         className="map"
-        aria-label="Map of cafe locations"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -126,7 +140,7 @@ export function CafeMap({ cafes, selectedOsmId, onSelect, center, radiusKm, noti
             position={[point.lat, point.lon]}
             icon={markerIcon(point.osmId === selectedOsmId)}
             title={point.name}
-            keyboard
+            keyboard={interactiveMarkers}
             eventHandlers={{ click: () => onSelect(point.osmId) }}
           >
             <Popup>

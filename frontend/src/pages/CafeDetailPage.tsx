@@ -171,6 +171,7 @@ export function CafeDetailPage({ osmId }: { osmId: string }) {
           center={null}
           radiusKm={null}
           notice={cafe.latitude === null || cafe.longitude === null ? 'No mapped location is available for this cafe.' : null}
+          interactiveMarkers={false}
         />
       </section>
     </article>

@@ -115,7 +115,7 @@ export function QualityPage() {
   );
 
   return (
-    <div aria-live="polite">
+    <div>
       <h2>Data Quality</h2>
       <p className="muted">
         Reliability of the current dataset. Missing metadata is expected in
@@ -153,6 +153,9 @@ export function QualityPage() {
         <p>Present, missing, and percentage per canonical field.</p>
         <div className="table-scroll">
           <table>
+            <caption className="visually-hidden">
+              Present, missing, and completeness percentage per canonical field
+            </caption>
             <thead>
               <tr>
                 <th scope="col">Field</th>
@@ -164,7 +167,7 @@ export function QualityPage() {
             <tbody>
               {Object.entries(completeness).map(([field, metrics]) => (
                 <tr key={field}>
-                  <td>{field}</td>
+                  <th scope="row">{field}</th>
                   <td>{String(metrics.present ?? '?')}</td>
                   <td>{String(metrics.missing ?? '?')}</td>
                   <td>
@@ -206,6 +209,9 @@ export function QualityPage() {
         <p>Per-record issues. An empty flag list means a clean record.</p>
         <div className="table-scroll">
           <table>
+            <caption className="visually-hidden">
+              Per-record quality issues by OSM identifier
+            </caption>
             <thead>
               <tr>
                 <th scope="col">OSM ID</th>
@@ -216,7 +222,7 @@ export function QualityPage() {
             <tbody>
               {quality.records.map((record) => (
                 <tr key={record.osm_id ?? 'unknown'}>
-                  <td>{record.osm_id ?? 'unknown'}</td>
+                  <th scope="row">{record.osm_id ?? 'unknown'}</th>
                   <td>{record.quality_flags.length > 0 ? record.quality_flags.join(', ') : '—'}</td>
                   <td>{record.quality_issue_count}</td>
                 </tr>

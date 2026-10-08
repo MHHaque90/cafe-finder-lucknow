@@ -26,13 +26,19 @@ export function Field({ label, value, unavailable }: { label: string; value: str
 
 interface CafeCardProps {
   cafe: CafeResult;
+  /** Optional map-highlight toggle. Provided only by list views where the
+   *  card click itself is mouse-only; a native button keeps the same
+   *  action keyboard- and screen-reader-operable. */
+  highlightLabel?: string;
+  highlightPressed?: boolean;
+  onHighlight?: () => void;
 }
 
 /**
  * One cafe result card. Renders only API data; every missing field gets
  * an explicit "unavailable in dataset" label instead of a placeholder.
  */
-export function CafeCard({ cafe }: CafeCardProps) {
+export function CafeCard({ cafe, highlightLabel, highlightPressed, onHighlight }: CafeCardProps) {
   const address = addressOf(cafe);
   return (
     <article className="card" aria-labelledby={`cafe-${cafe.osm_id}`}>
@@ -73,6 +79,24 @@ export function CafeCard({ cafe }: CafeCardProps) {
       <ScoreBreakdown cafe={cafe} />
       <p className="card-row">
         <a href={detailHash(cafe.osm_id)}>View details</a>
+        {onHighlight !== undefined && highlightLabel !== undefined && (
+          <>
+            {' · '}
+            <button
+              type="button"
+              className="link-button"
+              aria-pressed={highlightPressed ?? false}
+              onClick={(event) => {
+                // The surrounding card also selects on click; the button
+                // must not double-trigger it when toggling off.
+                event.stopPropagation();
+                onHighlight();
+              }}
+            >
+              {highlightLabel}
+            </button>
+          </>
+        )}
       </p>
     </article>
   );
